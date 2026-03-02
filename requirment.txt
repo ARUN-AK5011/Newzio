@@ -16,5 +16,5 @@ Werkzeug==2.0.1
 decouple
 ibm_db
 python-dotenv
-hashlib
-os
+
+os  

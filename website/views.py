@@ -8,12 +8,12 @@ api_key = config('NEWS_API')
 @news.route('/home')
 def main():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     return render_template('index.html')
 @news.route('/')
 def home():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     url = "https://newsapi.org/v2/top-headlines?country=in&language=en&apikey="+api_key+""
     trending = "https://newsapi.org/v2/everything?q=trending&language=en&sortBy=publishedAt&apiKey="+api_key+""
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
@@ -39,62 +39,62 @@ def categories():
 
     categories = [
         {
-            'image': 'https://res.cloudinary.com/newztrakerapplication/image/upload/v1668955293/NEWZIO/Categories/762-7622092_entertainment-png_kqtgjp.jpg',
+            'image': 'https://res.cloudinary.com/instarental/image/upload/v1772467895/32615_bcyqfp.jpg',
             'url': '/entertainment',
             'title': 'Entertainment'
         },
         {
-            'image': 'https://res.cloudinary.com/newztrakerapplication/image/upload/v1668955217/NEWZIO/Categories/20-202688_sports-png-file-download-free-play-sports-transparent_rilhak.jpg',
+            'image': 'https://res.cloudinary.com/instarental/image/upload/v1772468100/13034_lutd89.jpg',
             'url': '/sports',
             'title': 'Sports'
         },
         {
-            'image': 'https://res.cloudinary.com/newztrakerapplication/image/upload/v1668955364/NEWZIO/Categories/10-101013_transparent-politics-icon-png-politics-clipart-png-download_ecyu4i.png',
+            'image': 'https://res.cloudinary.com/instarental/image/upload/v1772468192/politics_yqredp.jpg',
             'url': '/politics',
             'title': 'Politics'
         },
         {
-            'image': 'https://res.cloudinary.com/newztrakerapplication/image/upload/v1668955429/NEWZIO/Categories/3ddf3d64784a7057b7bc227b4405678a_gig0dk.jpg',
-            'url': 'education',
+            'image': 'https://res.cloudinary.com/instarental/image/upload/v1772468334/8188487_jtylqi.jpg',
+            'url': '/education',
             'title': 'Education'
         },
         {
-            'image': 'https://res.cloudinary.com/newztrakerapplication/image/upload/v1668955507/NEWZIO/Categories/855df22700990ca085d87970f354054f_po1wrr.jpg',
+            'image': 'https://res.cloudinary.com/instarental/image/upload/v1772468386/health_mkfmcx.jpg',
             'url': '/health',
             'title': 'Health'
         },
         {
-            'image': 'https://res.cloudinary.com/newztrakerapplication/image/upload/v1668955559/NEWZIO/Categories/Economy-PNG-Download-Image_q5i2lt.png',
+            'image': 'https://res.cloudinary.com/instarental/image/upload/v1772468493/49066_a7snnz.jpg',
             'url': '/economy',
             'title': 'Economy'
         },
         {
-            'image': 'https://res.cloudinary.com/newztrakerapplication/image/upload/v1668955640/NEWZIO/Categories/11-119966_business-png-images-service-sector-icon-png_ptocrv.png',
+            'image': 'https://res.cloudinary.com/instarental/image/upload/v1772468575/Work_7_fxayzy.jpg',
             'url': '/business',
             'title': 'Business'
         },
         {
-            'image': 'https://res.cloudinary.com/newztrakerapplication/image/upload/v1668955684/NEWZIO/Categories/6-2-fashion-png_v2tv2m.png',
+            'image': 'https://res.cloudinary.com/instarental/image/upload/v1772468778/2586840_s00bo9.jpg',
             'url': '/fashion',
             'title': 'Fashion'
         }
     ]
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     return render_template('categories.html', category=categories)
 
 
 @news.route('/nav')
 def nav():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     return render_template('nav.html')
 
 
 @news.route('/search')
 def search():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     g.q = request.args.get('q')
 
     trending = 'https://newsapi.org/v2/everything?q=' + \
@@ -119,7 +119,7 @@ def search():
 @news.route('/chennai')
 def chennai():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=chennai&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -139,7 +139,7 @@ def chennai():
 @news.route('/bangalore')
 def bangalore():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=bangalore&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -159,7 +159,7 @@ def bangalore():
 @news.route('/mumbai')
 def mumbai():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=mumbai&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -179,7 +179,7 @@ def mumbai():
 @news.route('/kolkata')
 def kolkata():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=kolkata&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -199,7 +199,7 @@ def kolkata():
 @news.route('/hyderabad')
 def hyderabad():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=hyderabad&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -219,7 +219,7 @@ def hyderabad():
 @news.route('/delhi')
 def delhi():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=delhi&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -239,7 +239,7 @@ def delhi():
 @news.route('/Lucknow')
 def lucknow():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=lucknow&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -259,7 +259,7 @@ def lucknow():
 @news.route('/patna')
 def patna():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=patna&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -279,7 +279,7 @@ def patna():
 @news.route('/kochi')
 def kochi():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=kochi&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()
@@ -299,7 +299,7 @@ def kochi():
 @news.route('/ranchi')
 def ranchi():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
     chennai = "https://newsapi.org/v2/everything?q=ranchi&language=en&sortBy=publishedAt&apiKey="+api_key+""
     chennai_request = requests.get(chennai).json()

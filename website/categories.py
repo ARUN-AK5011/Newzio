@@ -81,7 +81,7 @@ def sports():
 @category.route('/education')
 def education():
     if not session:
-        return redirect(url_for('views.login'))
+        return redirect(url_for('auth.login'))
     url = "https://newsapi.org/v2/everything?q=education&language=en&apikey="+api_key+""
     top = "https://newsapi.org/v2/top-headlines?sources=techcrunch&language=en&apiKey="+api_key+""
 
@@ -99,7 +99,7 @@ def education():
     headline = {
         'articles': r['articles']
     }
-    return render_template('/components/categories/education.html', headlines=headline, search=trending, tops=top)
+    return render_template('./components/categories/education.html', headlines=headline, search=trending, tops=top)
 
 
 @category.route('/health')

@@ -1,71 +1,82 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for,session
-from . import conn
-import ibm_db
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
 import hashlib
 
-auth = Blueprint('views', __name__)
+auth = Blueprint('auth', __name__)
 
 
-@auth.route('/signin', methods=['POST', 'GET'])
+@auth.route('/signin', methods=['GET', 'POST'])
 def login():
-    
     if request.method == "POST":
         email = request.form.get('email')
         password = request.form.get('password')
-        password = bytes(password,'utf-8')
-        password = hashlib.sha256(password).hexdigest()
 
-        #query the db
-        sql = "SELECT * FROM users WHERE email =? AND password=?"
-        stmt = ibm_db.prepare(conn,sql)
-        ibm_db.bind_param(stmt,1,email)
-        ibm_db.bind_param(stmt,2,password)
-        ibm_db.execute(stmt)
-        acc = ibm_db.fetch_assoc(stmt)
+        if not email or not password:
+            flash("All fields are required.", "error")
+            return redirect(url_for('auth.login'))
+
+        password = hashlib.sha256(password.encode()).hexdigest()
+
+        conn = current_app.conn
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM users WHERE email=? AND password=?",
+            (email, password)
+        )
+        acc = cursor.fetchone()
+
         if not acc:
-           flash('User Does not exist in our Database Please Sign Up First', category='error')
-        if acc:
-            session['login_status'] = True
-            session['username'] = email
-            session['user_id'] = email.split('@')[0]
-            user_id = email.split('@')[0]
-            print(user_id)
-            return redirect('/')
-            
-    return render_template('/components/signin.html')
+            flash('Invalid email or password.', category='error')
+            return redirect(url_for('auth.login'))
+
+        session['login_status'] = True
+        session['username'] = email
+        session['user_id'] = email.split('@')[0]
+
+        return redirect(url_for('news.home'))
+
+    return render_template('components/signin.html')
+
 
 @auth.route('/logout')
 def logout():
-    session.pop('login_status',None)
-    session.pop('user_id',None)
-    session.pop('username',None)
-
-
+    session.clear()
     return redirect(url_for('news.home'))
 
-@auth.route('/register', methods=['POST', 'GET'])
+
+@auth.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         email = request.form.get('email')
         name = request.form.get('name')
         password = request.form.get('password')
-        password = bytes(password,'utf-8')
-        password = hashlib.sha256(password).hexdigest()
-        
-        sql = "SELECT * FROM users WHERE email =?"
-        stmt = ibm_db.prepare(conn, sql)
-        ibm_db.bind_param(stmt,1,email)
-        ibm_db.execute(stmt)
-        acc = ibm_db.fetch_assoc(stmt)
+
+        if not email or not name or not password:
+            flash("All fields are required.", "error")
+            return redirect(url_for('auth.register'))
+
+        password = hashlib.sha256(password.encode()).hexdigest()
+
+        conn = current_app.conn
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM users WHERE email=?",
+            (email,)
+        )
+        acc = cursor.fetchone()
+
         if acc:
-            flash('Email Already exists in our Database Please Sign in', category='error')
-      
-        insert_sql = "INSERT INTO  users VALUES (?,?,?)"
-        prep_stmt = ibm_db.prepare(conn, insert_sql)
-        ibm_db.bind_param(prep_stmt, 1, name)
-        ibm_db.bind_param(prep_stmt, 2, email)
-        ibm_db.bind_param(prep_stmt, 3, password)
-        ibm_db.execute(prep_stmt)
-        flash('Account Created Successfully !', category='success')
-        return redirect(url_for('views.login'))
-    return render_template('/components/register.html')
+            flash('Email already exists. Please sign in.', category='error')
+            return redirect(url_for('auth.login'))
+
+        cursor.execute(
+            "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+            (name, email, password)
+        )
+        conn.commit()
+
+        flash('Account created successfully!', category='success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('components/register.html')
