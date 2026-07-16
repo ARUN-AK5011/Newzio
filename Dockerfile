@@ -1,5 +1,5 @@
   FROM python:3.8
-  LABEL maintainer="Lionex , richardson20june@gmail.com"
+  LABEL maintainer="Lionex , thedeveloper.arun@gmail.com@gmail.com"
   RUN apt-get update
   RUN mkdir /app
   WORKDIR /app
